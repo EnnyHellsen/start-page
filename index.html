@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <title> New Tab </title>
+
+  <style>
+
+  body {
+    background-size: 100%;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  #time {
+    font-size: 200px;
+    text-align: center;
+    margin-top: 90px;
+  }
+
+  #image-title {
+    text-align: center;
+    font-size: 30px;
+    margin-top: -150px;
+  }
+
+  #icons-menu {
+    height: 150px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    text-align: center;
+  }
+
+  .icon {
+    display: inline-block;
+    height: 100px;
+    margin-left: 6%;
+    margin-right: 6%;
+  }
+
+  .icon:hover, .weather-text:hover {
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+  }
+
+  #weather {
+    right: 10px;
+    top: 10px;
+    position: absolute;
+    text-align: right;
+    font-size: 20px;
+  }
+  .weather-text {
+    margin-right: 15px;
+  }
+
+  .weather-icon {
+    margin-top: -15px;
+  }
+  </style>
+</head>
+
+<body>
+  <div id="weather">
+    <p class="weather-text"></p>
+    <p class="weather-icon"></p>
+  </div>
+
+  <div id="text">
+    <h1 id="time"> </h1>
+    <p id="image-title"></p>
+  </div>
+
+  <div id="icons-menu">
+    <a href="https://calendar.google.com/calendar/render#main_7">
+      <img class="icon" src="calendar.png">
+    </a>
+
+    <a href="https://login.microsoftonline.com/">
+      <img class="icon" src="email.png">
+    </a>
+
+    <a href="https://drive.google.com/drive/my-drive">
+      <img class="icon" src="googledrive.png">
+    </a>
+
+    <a href="https://linkedin.com">
+      <img class="icon" src="linkedin.png">
+    </a>
+
+  </div>
+
+
+
+  <script>
+
+  $(document).ready(function(){
+
+    (function () {
+        function checkTime(i) {
+            return (i < 10) ? "0" + i : i;
+        }
+
+        function startTime() {
+            var today = new Date(),
+                h = checkTime(today.getHours()),
+                m = checkTime(today.getMinutes());
+            document.getElementById('time').innerHTML = h + ":" + m;
+            t = setTimeout(function () {
+                startTime()
+            }, 5);
+        }
+        startTime();
+    })();
+
+
+    //GET FLICKR BACKGROUND AND TITLE
+    $.getJSON( "https://api.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=d43cb2e5e5e362f2b6a0c0af4e9fd20a&format=json&nojsoncallback=1&extras=url_l", function( data ) {
+      console.log(data);
+      var random = Math.floor((Math.random() * 100) + 0);
+      var url = data.photos.photo[random].url_l;
+      var title = data.photos.photo[random].title;
+
+      $('body').css('background-image','url(' +  url + ')');
+      $('#image-title').append(title);
+      });
+
+
+      //GET WEATHER DATA AND SYMBOL
+            $.getJSON("http://api.openweathermap.org/data/2.5/weather?q=Stockholm&units=metric&APPID=fd674d20076b6e22dfc2b10f9599998e",function(json){
+                console.log(json);
+                var name = json.name;
+                var temp = Math.round(json.main.temp);
+                $('.weather-text').append(name + '<br>');
+                $('.weather-text').append(temp + ' ' + 'C');
+
+                var weatherIcon = json.weather[0].icon;
+                console.log(weatherIcon);
+                $('.weather-icon').append('<img src="http://openweathermap.org/img/w/' + weatherIcon + '.png">');
+          });
+
+
+
+});
+  </script>
+</body>
+</html>
+
+
+<!--       function gettingJSON(){
+
+            $.getJSON("https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=d43cb2e5e5e362f2b6a0c0af4e9fd20a&format=json&nojsoncallback=1&text=cats&extras=url_o",function(json){
+              console.log(data);
+            });
+      }
+
+
+user_id=136283322@N03
